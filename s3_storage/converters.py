@@ -1,6 +1,7 @@
 import io
-# import os
 import pandas as pd
+import json
+# import os
 
 
 def GET_BYTES(df: pd.DataFrame, filename: str) -> bytes:
@@ -19,6 +20,10 @@ def GET_BYTES(df: pd.DataFrame, filename: str) -> bytes:
 
 def GET_HTML_STR(df: pd.DataFrame) -> str:
     return df.to_html(index=False)
+
+
+def GET_DICT_FROM_JSON(json_str: str) -> dict:
+    return json.loads(json_str)
 
 
 #     html += """

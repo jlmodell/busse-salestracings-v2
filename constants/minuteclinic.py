@@ -1,0 +1,12 @@
+MINUTE_CLINIC_AS_STR = {"NORTHEAST LA KIDNEY SPECIALIST LLC": "Rep29",
+                        "MINUTECLINIC": "Rep8",
+                        "MINUTECLINIC AZ NV": "Rep18",
+                        "MINUTECLINIC CA": "Rep2",
+                        "MINUTECLINIC FL": "Rep5",
+                        "MINUTECLINIC IL": "Rep7",
+                        "MINUTECLINIC IN OH": "Rep25",
+                        "MINUTECLINIC MA MD CT RI NY NJ": "Rep8",
+                        "MINUTECLINIC MI": "Rep3",
+                        "MINUTECLINIC MN KS MO": "Rep9",
+                        "MINUTECLINIC TN NC GA": "Rep29",
+                        "MINUTECLINIC TX": "Rep1"}

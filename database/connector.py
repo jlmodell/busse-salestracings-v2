@@ -1,27 +1,18 @@
+import sys
 from pymongo import MongoClient
-
-from constants import BUSSE_REBATE_TRACES, BUSSE_REBATE_TRACES_COLLECTIONS, BUSSE_PRICING, BUSSE_PRICING_COLLECTIONS, MONGODB_URI, DATABASES
-
 from pymongo.collection import Collection
 from pymongo.database import Database
+
+from constants import BUSSE_SALES_REPS, BUSSE_SALES_REPS_COLLECTIONS, MONGODB_URI
 
 
 def GET_CLIENT() -> MongoClient:
     return MongoClient(MONGODB_URI)
 
 
-def GET_DATABASE(client: MongoClient, DATABASE: str) -> Database:
-    __db__ = DATABASE.upper().strip()
-
-    if __db__ == BUSSE_REBATE_TRACES:
-        assert __db__ in DATABASES, f"{DATABASE} not in the databases list, check database_constants.py"
-
-        return client[DATABASES[__db__]]
-
-    if __db__ == BUSSE_PRICING:
-        assert __db__ in DATABASES, f"{DATABASE} not in the databases list, check database_constants.py"
-
-        return client[DATABASES[__db__]]
+def GET_DATABASE(client: MongoClient, database: str) -> Database:
+    if database == BUSSE_SALES_REPS:
+        return client[database]
 
     return None
 
@@ -29,10 +20,15 @@ def GET_DATABASE(client: MongoClient, DATABASE: str) -> Database:
 def GET_COLLECTION(db: Database, collection_key: str) -> Collection:
     __db_name__ = db.name
 
-    if __db_name__ == DATABASES[BUSSE_REBATE_TRACES]:
-        return db[BUSSE_REBATE_TRACES_COLLECTIONS[collection_key]]
+    if __db_name__ == BUSSE_SALES_REPS:
+        try:
+            if collection_key in BUSSE_SALES_REPS_COLLECTIONS.values():
+                return db[collection_key]
+            elif collection_key in BUSSE_SALES_REPS_COLLECTIONS.keys():
+                return db[BUSSE_SALES_REPS_COLLECTIONS[collection_key]]
 
-    if __db_name__ == DATABASES[BUSSE_PRICING]:
-        return db[BUSSE_PRICING_COLLECTIONS[collection_key]]
+        except Exception as e:
+            print(e)
+            sys.exit(1)
 
     return None
