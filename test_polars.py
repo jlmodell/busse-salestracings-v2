@@ -7,6 +7,28 @@ from database import *
 from s3_storage import *
 
 from rich import print
+from typing import List
+
+
+def determine_sales_rep(row) -> str:
+    state = row[0] == "Rep40"
+    zip_code = row[1] == "Rep40"
+    branch = row[2] == "Rep40"
+    custom_kit = row[3] == "Rep40"
+
+    sales_rep = "Rep40"
+
+    if not state:
+        sales_rep = row[0]
+    if not zip_code:
+        sales_rep = row[1]
+    if not branch:
+        sales_rep = row[2]
+    if not custom_kit:
+        sales_rep = row[3]
+
+    return sales_rep
+
 
 client = GET_CLIENT()
 db = client.busse_sales_data_warehouse
@@ -27,131 +49,88 @@ docs = list(
 df = pd.DataFrame(docs)
 
 
-if __name__ == "__main__":
-
-    # prioritues
-    print("states", len(STATES_AS_STR))
-    print("zipcodes", len(ZIP_CODES_AS_STR))
-    print("cardinal branches", len(CARDINAL_BRANCHES_AS_STR))
-    print("custom kits", len(CUSTOM_KITS))
-
-    def determine_sales_rep(
-        state: str, zip_code: str, cardinal_branch: str, kit: str
-    ) -> str:
-        sales_rep = "Rep40"
-        print(state, zip_code, cardinal_branch, kit)
-
-        if state != "Rep40":
-            sales_rep = state
-            print(sales_rep)
-
-        if zip_code != "Rep40":
-            sales_rep = zip_code
-            print(sales_rep)
-
-        if cardinal_branch != "Rep40":
-            sales_rep = cardinal_branch
-            print(sales_rep)
-
-        if kit != "Rep40":
-            sales_rep = kit
-            print(sales_rep)
-
-        print(sales_rep)
-        return sales_rep
-
+def credit_rep_from_cardinal_tracings(df: pd.DataFrame) -> pl.DataFrame:
     df = (
-        pl.DataFrame(df)
+        pl.from_pandas(df)
         .lazy()
-        .with_column(
-            (
-                pl.col("9")
-                .apply(lambda x: STATES_AS_STR.get(x, "Rep40"))
-                .alias("__rep__state__")
-            )
-        )
-        .with_column(
-            (
-                pl.col("10")
-                .apply(lambda x: ZIP_CODES_AS_STR.get(x[:3], "Rep40"))
-                .alias("__rep__zipcode__")
-            )
-        )
-        .with_column(
-            (
-                pl.col("4")
-                .apply(lambda x: CARDINAL_BRANCHES_AS_STR.get(x, "Rep40"))
-                .alias("__rep__branch__")
-            )
-        )
-        .with_column(
-            (
-                pl.col("12")
-                .apply(lambda x: CUSTOM_KITS.get(x, "Rep40"))
-                .alias("__rep__kit__")
-            )
-        )
-        .with_column(
+        .with_columns(
             (
                 (
-                    pl.when(~pl.col("__rep__state__").str.contains(r"^Rep40$"))
-                    .then(pl.col("__rep__state__"))
-                    .otherwise("Rep40")
-                ).alias("__rep__")
-            )
-        )
-        .with_column(
-            (
+                    pl.col("9")
+                    .apply(lambda x: STATES_AS_STR.get(x, "Rep40"))
+                    .alias("__rep__state__")
+                ),
                 (
-                    pl.when(
-                        (~pl.col("__rep__zipcode__").str.contains(r"^Rep40$"))
-                        & (~pl.col("__rep__").str.contains(r"^Rep40$"))
-                    )
-                    .then(pl.col("__rep__zipcode__"))
-                    .otherwise(pl.col("__rep__"))
-                ).alias("__rep__")
-            )
-        )
-        .with_column(
-            (
+                    pl.col("10")
+                    .apply(lambda x: ZIP_CODES_AS_STR.get(x[:3], "Rep40"))
+                    .alias("__rep__zipcode__")
+                ),
                 (
-                    pl.when(
-                        (~pl.col("__rep__branch__").str.contains(r"^Rep40$"))
-                        & (~pl.col("__rep__").str.contains(r"^Rep40$"))
-                    )
-                    .then(pl.col("__rep__branch__"))
-                    .otherwise(pl.col("__rep__"))
-                ).alias("__rep__")
-            )
-        )
-        .with_column(
-            (
+                    pl.col("3")
+                    .apply(lambda x: CARDINAL_BRANCHES_AS_STR.get(x, "Rep40"))
+                    .alias("__rep__branch__")
+                ),
                 (
-                    pl.when(
-                        (~pl.col("__rep__kit__").str.contains(r"^?!Rep40$"))
-                        & (~pl.col("__rep__").str.contains(r"^Rep40$"))
-                    )
-                    .then(pl.col("__rep__kit__"))
-                    .otherwise(pl.col("__rep__"))
-                ).alias("__rep__")
+                    pl.col("12")
+                    .apply(lambda x: CUSTOM_KITS.get(x, "Rep40"))
+                    .alias("__rep__kit__")
+                ),
             )
         )
+        .select(
+            [
+                pl.all(),
+                pl.concat_list(
+                    [
+                        pl.col("__rep__state__"),
+                        pl.col("__rep__zipcode__"),
+                        pl.col("__rep__branch__"),
+                        pl.col("__rep__kit__"),
+                    ]
+                ).alias("__rep__list__"),
+            ]
+        )
+        .drop(["__rep__state__", "__rep__zipcode__", "__rep__branch__", "__rep__kit__"])
+        .select(
+            [
+                pl.all(),
+                pl.col("__rep__list__").apply(determine_sales_rep).alias("__rep__"),
+            ]
+        )
+        .drop("__rep__list__")
         .select("*")
-        .limit(1)
-        .collect()
+        # .limit(20)
     )
 
-    # df = (
-    #     df.groupby(["__rep__", "12", "15"])
-    #     .agg(
-    #         [
-    #             pl.col("14").sum().alias("quantity"),
-    #             pl.col("16").sum().alias("sale_value"),
-    #         ]
-    #     )
-    #     .sort("__rep__")
-    # )
+    return df.collect()
 
-    df.write_csv("test.csv")
 
-    print(df)
+def aggregate_by_rep(df: pl.DataFrame) -> pl.DataFrame:
+    df = (
+        df.lazy()
+        .groupby(["__rep__", "12", "15"])
+        .agg(
+            [
+                pl.col("14").sum().alias("quantity"),
+                pl.col("16").sum().alias("sale_value"),
+            ]
+        )
+        .sort("__rep__")
+    )
+
+    return df.collect()
+
+
+if __name__ == "__main__":
+
+    # priorities
+    # print("states", len(STATES_AS_STR))
+    # print("zipcodes", len(ZIP_CODES_AS_STR))
+    # print("cardinal branches", len(CARDINAL_BRANCHES_AS_STR))
+    # print("custom kits", len(CUSTOM_KITS))
+
+    cardinal = aggregate_by_rep(credit_rep_from_cardinal_tracings(df))
+
+    cardinal.write_csv("cardinal.csv")
+
+    print(cardinal)
