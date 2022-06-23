@@ -1,0 +1,36 @@
+{
+  "type": "xlsx",
+  "delimiter": null,
+  "header": 0,
+  "distributor": "MEDLINE",
+  "raw_fields_map": {
+    "unique_identifier": null,
+    "sale_date": "InvoiceDat",
+    "item": "VendorItm",
+    "distributor_item": "MedlineItm",
+    "sale_amount": "ContrCost",
+    "quantity": "Quantity",
+    "uom": "UoM",
+    "invoice_nbr": "Invoice",
+    "division": "Plant",
+    "contract": "VendorCont",
+    "rebate_amount": "RebateAmt",
+    "end_user_name": "CustName",
+    "end_user_address": "CustStreet",
+    "end_user_city": "CustCity",
+    "end_user_state": "CustState",
+    "end_user_zip_code": "CustZipcod"
+  },
+  "unique_id_creator": "Invoice + Line",
+  "calc_sale_amount": "sale_amount;quantity",
+  "date_format": "%Y%m%d",
+  "str_fields": [
+    "CustZipcod",
+    "VendorItm",
+    "MedlineItm",
+    "InvoiceDat",
+    "Invoice",
+    "Plant",
+    "VendorCont"
+  ]
+}

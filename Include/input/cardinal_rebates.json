@@ -1,0 +1,27 @@
+{
+  "type": "csv",
+  "delimiter": "|",
+  "header": null,
+  "distributor": "CARDINAL_REBATES",
+  "raw_fields_map": {
+    "unique_identifier": "0",
+    "sale_date": "70",
+    "item": "51",
+    "distributor_item": "49",
+    "sale_amount": null,
+    "quantity": "56",
+    "uom": "57",
+    "invoice_nbr": "69",
+    "division": "10",
+    "contract": "15",
+    "rebate_amount": "68",
+    "end_user_name": "21",
+    "end_user_address": "22",
+    "end_user_address_2": null,
+    "end_user_city": "23",
+    "end_user_state": "24",
+    "end_user_zip_code": "25"
+  },
+  "date_format": "%Y%m%d",
+  "str_fields": ["25", "69", "70", "51", "49"]
+}

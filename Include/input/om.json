@@ -1,0 +1,33 @@
+{
+  "type": "txt",
+  "delimiter": ",",
+  "header": 1,
+  "distributor": "OM",
+  "raw_fields_map": {
+    "unique_identifier": "ORDER NBR",
+    "sale_date": "INVOICE DT",
+    "item": "PART NBR",
+    "distributor_item": "PART NBR",
+    "sale_amount": "INVOICE COST     ",
+    "quantity": "SHIP QTY",
+    "uom": "BU",
+    "invoice_nbr": "INVOICE NBR",
+    "division": "BR NBR",
+    "contract": "COMMITMENT #",
+    "rebate_amount": "REBATE    ",
+    "end_user_name": "CUST NAME",
+    "end_user_address": "CUST ADDR 1",
+    "end_user_address_2": "CUST ADDR 2",
+    "end_user_city": "CITY       ",
+    "end_user_state": "STATE",
+    "end_user_zip_code": "ZIP CODE            "
+  },
+  "date_format": "%m%d%Y",
+  "str_fields": [
+    "BR NBR",
+    "ZIP CODE            ",
+    "INVOICE NBR",
+    "PART NBR",
+    "INVOICE DT"
+  ]
+}

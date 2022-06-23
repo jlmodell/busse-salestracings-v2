@@ -1,0 +1,25 @@
+{
+  "type": "xlsx",
+  "delimiter": null,
+  "header": 0,
+  "distributor": "CONCORDANCE",
+  "raw_fields_map": {
+    "unique_identifier": "Inv No.",
+    "sale_date": "Inv Date",
+    "item": "Stock#",
+    "distributor_item": "Stock#",
+    "sale_amount": "Ext.",
+    "quantity": "QTY",
+    "uom": "UM",
+    "invoice_nbr": "Inv No.",
+    "division": "Location",
+    "end_user_name": "Name",
+    "end_user_address": "Address 1",
+    "end_user_address_2": "Address 2",
+    "end_user_city": "City",
+    "end_user_state": "State",
+    "end_user_zip_code": "Zip"
+  },
+  "date_format": "%m/%d/%y",
+  "str_fields": ["Inv Date", "Inv No.", "Stock#", "Zip"]
+}

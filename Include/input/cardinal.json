@@ -1,0 +1,27 @@
+{
+  "type": "csv",
+  "delimiter": "|",
+  "header": null,
+  "distributor": "CARDINAL",
+  "raw_fields_map": {
+    "unique_identifier": "0",
+    "sale_date": "20",
+    "item": "12",
+    "distributor_item": "13",
+    "sale_amount": "16",
+    "quantity": "14",
+    "uom": "15",
+    "invoice_nbr": "19",
+    "division": "4",
+    "contract": null,
+    "rebate_amount": null,
+    "end_user_name": "6",
+    "end_user_address": "7",
+    "end_user_address_2": null,
+    "end_user_city": "8",
+    "end_user_state": "9",
+    "end_user_zip_code": "10"
+  },
+  "date_format": "%Y%m%d",
+  "str_fields": ["10", "19", "4", "20", "12", "13"]
+}

@@ -2,7 +2,7 @@
   "type": "csv",
   "delimiter": "|",
   "header": null,
-  "distributor": "BUSSE_SALES",
+  "distributor": "HENRYSCHEIN",
   "raw_fields_map": {
     "unique_identifier": "0",
     "sale_date": "20",
