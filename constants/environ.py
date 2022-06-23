@@ -1,14 +1,17 @@
 import os
 from dotenv import load_dotenv
 
-if os.environ["PRODUCTION"] == True:
-    load_dotenv(os.path.join(os.environ["USERPROFILE"], ".env"))
-else:
+try:
+    if os.environ["PRODUCTION"] == True:
+        load_dotenv(os.path.join(os.environ["USERPROFILE"], ".env"))
+    else:
+        load_dotenv(".env")
+except KeyError:
     load_dotenv(".env")
 
 MONGODB_URI = os.environ.get('MONGODB_URI', None)
-ACCESS_KEY = os.environ.get('ACCESS_KEY', None)
-SECRET_KEY = os.environ.get('SECRET_KEY', None)
+ACCESS_KEY = os.environ.get('S3_ACCESS_KEY', None)
+SECRET_KEY = os.environ.get('S3_SECRET_KEY', None)
 S3_URL = os.environ.get('S3_URL', None)
 S3_BUCKET = os.environ.get('S3_BUCKET', None)
 
